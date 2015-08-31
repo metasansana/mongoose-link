@@ -26,7 +26,6 @@
     "must": "^0.12.0"
   },
   "scripts": {
-    "prepublish": "gulp prepublish",
     "test": "./node_modules/.bin/mocha --opts mocha.opts ./test.js"
   },
   "license": "Apache-2.0"
