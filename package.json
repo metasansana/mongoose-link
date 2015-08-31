@@ -10,7 +10,7 @@
     "url": ""
   },
   "files": [
-    "lib"
+    "build.js"
   ],
   "main": "build.js",
   "keywords": [

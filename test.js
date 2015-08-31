@@ -7,8 +7,7 @@ var doctors;
 var numbers;
 var test;
 var model = {
-  find(q) {
-   test(q);
+  find(q) {   
    return {
      lean() {
        return {
@@ -42,8 +41,7 @@ describe('sync', function() {
   it('should work with single value fields', function () {
 
     docs = [{id:4,doctor:23},{id:34,doctor:3},{id:7,doctor:124},{id:6,doctor:23},{id:9,doctor:2}];
-    numbers = docs.map(doc=>doc.doctor);
-    test = (q)=>must(q.$in).eql(docs.map(doc=>doc.doctor));
+    numbers = docs.map(doc=>doc.doctor);    
 
     return sync(model, 'doctor:number')(docs).
     then(function (newDocs){

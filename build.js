@@ -27,16 +27,18 @@ function sync(model, spec, fields) {
     var args = [];
     var thisDoc;
     var index;
+    var query = {};
 
     spec = spec.split(':');
     ref = spec[0];
     path = spec[1];
-
-    return model.find({
+    query[path] = {
       $in: args.concat.apply(args, docs.map(function (doc) {
         return doc[ref];
       }))
-    }).lean().exec().then(function link_related_docs(related) {
+    };
+
+    return model.find(query, fields).lean().exec().then(function link_related_docs(related) {
       related.forEach(function (rel) {
 
         docs.forEach(function (doc) {

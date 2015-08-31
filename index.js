@@ -20,14 +20,16 @@
     var args = [];
     var thisDoc;
     var index;
+    var query = {};
 
     spec = spec.split(':');
     ref = spec[0];
     path = spec[1];
-
-    return model.find({
+    query[path] = {
       $in:args.concat.apply(args,docs.map(doc=>doc[ref]))
-    }).
+    }
+
+    return model.find(query, fields).
     lean().
     exec().
     then(function link_related_docs(related) {
