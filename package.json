@@ -1,6 +1,6 @@
 {
   "name": "mongoose-link",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Link related documents from a mongoose query.",
   "homepage": "",
   "repository": "metasansana/mongoose-link",
