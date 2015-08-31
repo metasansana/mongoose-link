@@ -1,5 +1,5 @@
 import must from 'must';
-import link from './index';
+import {sync} from './index';
 import Promise from 'bluebird';
 
 var docs;
@@ -23,7 +23,7 @@ var model = {
 }
 }
 
-describe('link', function() {
+describe('sync', function() {
 
 
   beforeEach(function (){
@@ -45,7 +45,7 @@ describe('link', function() {
     numbers = docs.map(doc=>doc.doctor);
     test = (q)=>must(q.$in).eql(docs.map(doc=>doc.doctor));
 
-    return link(model, 'doctor:number')(docs).
+    return sync(model, 'doctor:number')(docs).
     then(function (newDocs){
       must(docs===newDocs).be(true);
       docs.forEach((doc,i)=>{must(docs[i].doctor.number).eql(numbers[i])});
@@ -64,7 +64,7 @@ describe('link', function() {
     numbers = docs.map(doc=>doc.doctor);
     test = (q)=>must(q.$in).eql([].concat.apply([],docs.map(doc=>doc.doctor)));
 
-    return link(model, 'doctor:number')(docs).
+    return sync(model, 'doctor:number')(docs).
     then(function (newDocs){
       must(docs===newDocs).be(true);
       docs.forEach((doc,i)=> {

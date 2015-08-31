@@ -23,7 +23,7 @@ Comment.
 find().
 lean().
 exec().
-then(link(User, 'created_by:user')).
+then(link.sync(User, 'created_by:user')).
 then(function(comments) {  
   //Comments should look like {_id:'5325245af32e34634363', user:{email:'x@x.com'}}
 })

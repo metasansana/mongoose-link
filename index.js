@@ -1,13 +1,17 @@
 
 /**
- * link
+ * sync fetches all the data at once and merges it in.
+ * Use this method for more efficient querying of MongoDB, keep
+ * in mind the merge will take place in one go.
+ *
+ *  
  * @param  {mongoose.Model} model The model to query
  * @param  {string} spec   A string that tells us the path on the object to populate and the path
  *                         to query, eg. doctor:user
  * @param  {Object} [fields] Will be passed as the fields argument to the mongoose query.
  * @return {Array}
  */
- export default function link(model, spec, fields) {
+ export function sync(model, spec, fields) {
 
   return function accept_docs_multi (docs) {
 

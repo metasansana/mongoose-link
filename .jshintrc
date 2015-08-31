@@ -1,8 +1,7 @@
 {
   "esnext":true,
   "curly": false,
-  "eqeqeq": true,
-  "immed": true,
+  "eqeqeq": true,  
   "latedef": true,
   "newcap": true,
   "noarg": true,
