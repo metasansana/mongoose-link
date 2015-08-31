@@ -26,7 +26,7 @@
     ref = spec[0];
     path = spec[1];
     query[path] = {
-      $in:args.concat.apply(args,docs.map(doc=>doc[ref]))
+      $in:args.concat.apply(args,docs.map(doc=>(doc[ref]===undefined)?null:doc[ref]))
     }
 
     return model.find(query, fields).

@@ -34,7 +34,7 @@ function sync(model, spec, fields) {
     path = spec[1];
     query[path] = {
       $in: args.concat.apply(args, docs.map(function (doc) {
-        return doc[ref];
+        return doc[ref] === undefined ? null : doc[ref];
       }))
     };
 
