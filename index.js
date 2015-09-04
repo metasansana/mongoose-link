@@ -22,6 +22,8 @@
     var index;
     var query = {};
 
+    if(!docs) return docs;
+
     spec = spec.split(':');
     ref = spec[0];
     path = spec[1];
