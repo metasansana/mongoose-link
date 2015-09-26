@@ -1,9 +1,10 @@
 # mongoose-link [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
 > Link related documents from a mongoose query.
 
-This module was created in lieu of being able to populate documents 
-in mongoose in a way that is not dependant on `_id`.
+This module provides an alternative way to populate
+related (linked) documents from a mongoose query.
 
+It does not depend on `_id`.
 
 ## Install
 
@@ -23,7 +24,7 @@ Comment.
 find().
 lean().
 exec().
-then(link.sync(User, 'created_by:user')).
+then(link.sync(User, 'created_by:user',{email:true}, {lean:true})).
 then(function(comments) {  
   //Comments should look like {_id:'5325245af32e34634363', user:{email:'x@x.com'}}
 })
