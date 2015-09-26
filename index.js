@@ -1,5 +1,4 @@
 import property from 'property-seek';
-import Promise from 'bluebird';
 
 const DEFAULT_CONFIG = {
     lean: true
@@ -30,9 +29,8 @@ export function sync(model, spec, fields, config) {
         var p;
 
         config = config || DEFAULT_CONFIG;
-
+        docs = (Array.isArray(docs)) ? docs : [docs];
         if (!docs) return docs;
-
         spec = spec.split(':');
         localPath = spec[0];
         relatedPath = spec[1];

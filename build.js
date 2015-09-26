@@ -1,64 +1,90 @@
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+exports.sync = sync;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _propertySeek = require('property-seek');
+
+var _propertySeek2 = _interopRequireDefault(_propertySeek);
+
+var DEFAULT_CONFIG = {
+    lean: true
+};
 
 /**
  * sync fetches all the data at once and merges it in.
  * Use this method for more efficient querying of MongoDB, keep
  * in mind the merge will take place in one go.
- *
- *  
+ * 
  * @param  {mongoose.Model} model The model to query
  * @param  {string} spec   A string that tells us the path on the object to populate and the path
  *                         to query, eg. doctor:user
  * @param  {Object} [fields] Will be passed as the fields argument to the mongoose query.
+ * @param {Config} [config] A configuration object
  * @return {Array}
  */
-'use strict';
 
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-exports.sync = sync;
+function sync(model, spec, fields, config) {
 
-function sync(model, spec, fields) {
+    return function accept_docs_to_be_linked(docs) {
 
-  return function accept_docs_multi(docs) {
+        var localPath;
+        var relatedPath;
+        var args = [];
+        var link;
+        var query = {};
+        var atlas = {};
+        var p;
 
-    var ref;
-    var path;
-    var args = [];
-    var thisDoc;
-    var index;
-    var query = {};
+        config = config || DEFAULT_CONFIG;
+        docs = Array.isArray(docs) ? docs : [docs];
 
-    if (!docs) return docs;
+        if (!docs) return docs;
+        console.log('dddddd docs ', docs);
 
-    spec = spec.split(':');
-    ref = spec[0];
-    path = spec[1];
-    query[path] = {
-      $in: args.concat.apply(args, docs.map(function (doc) {
-        return doc[ref] === undefined ? null : doc[ref];
-      }))
-    };
+        spec = spec.split(':');
+        localPath = spec[0];
+        relatedPath = spec[1];
 
-    return model.find(query, fields).lean().exec().then(function link_related_docs(related) {
-      related.forEach(function (rel) {
+        query[relatedPath] = {
+            $in: args.concat.apply(args, docs.map(function (doc) {
+                return doc[localPath] === undefined ? null : doc[localPath];
+            })).filter(function (item, index, all) {
+                return all.indexOf(item) === index;
+            })
+        };
 
-        docs.forEach(function (doc) {
-          thisDoc = doc[ref];
-          if (Array.isArray(thisDoc)) {
+        p = model.find(query, fields);
+        if (config.lean) p = p.lean();
+        return p.exec().then(function (related) {
 
-            thisDoc.forEach(function (item, i) {
-              if (item === doc[path]) thisDoc[i] = doc;
+            if (!Array.isArray(related)) return related;
+
+            //Create an atlas (map) of the related documents
+            //using the relatedPath as the keys
+            related.forEach(function (rel) {
+                atlas[_propertySeek2['default'].get(rel, relatedPath)] = rel;
             });
-          } else {
 
-            if (thisDoc === rel[path]) doc[ref] = rel;
-          }
+            return docs.map(function (doc) {
+
+                if (Array.isArray(doc[localPath])) {
+
+                    doc[localPath] = doc[localPath].map(function (ref) {
+                        return atlas[ref] ? atlas[ref] : null;
+                    });
+                } else {
+
+                    doc[localPath] = atlas[doc[localPath]] ? atlas[doc[localPath]] : null;
+                }
+
+                return doc;
+            });
         });
-      });
-
-      return docs;
-    });
-  };
+    };
 }
 
