@@ -41,22 +41,24 @@ function sync(model, spec, fields, config) {
         var p;
 
         config = config || DEFAULT_CONFIG;
-        docs = Array.isArray(docs) ? docs : [docs];
-
         if (!docs) return docs;
-        console.log('dddddd docs ', docs);
 
+        docs = Array.isArray(docs) ? docs : [docs];
         spec = spec.split(':');
         localPath = spec[0];
         relatedPath = spec[1];
 
         query[relatedPath] = {
             $in: args.concat.apply(args, docs.map(function (doc) {
-                return doc[localPath] === undefined ? null : doc[localPath];
+                return doc[localPath];
+            }).filter(function (x) {
+                return x;
             })).filter(function (item, index, all) {
                 return all.indexOf(item) === index;
             })
         };
+
+        console.log('qery ', query);
 
         p = model.find(query, fields);
         if (config.lean) p = p.lean();

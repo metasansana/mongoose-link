@@ -29,8 +29,9 @@ export function sync(model, spec, fields, config) {
         var p;
 
         config = config || DEFAULT_CONFIG;
-        docs = (Array.isArray(docs)) ? docs : [docs];
         if (!docs) return docs;
+
+        docs = (Array.isArray(docs)) ? docs : [docs];
         spec = spec.split(':');
         localPath = spec[0];
         relatedPath = spec[1];
@@ -39,9 +40,7 @@ export function sync(model, spec, fields, config) {
             $in: args.
             concat.
             apply(args,
-                docs.map(doc =>
-                    (doc[localPath] === undefined) ?
-                    null : doc[localPath])).
+                docs.map(doc => doc[localPath]).filter(x => x)).
             filter((item, index, all) => {
                 return (all.indexOf(item) === index);
             })
