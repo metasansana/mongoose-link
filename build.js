@@ -38,12 +38,13 @@ function sync(model, spec, fields, config) {
         var link;
         var query = {};
         var atlas = {};
+        var isArray = Array.isArray(docs);
         var p;
 
         config = config || DEFAULT_CONFIG;
         if (!docs) return docs;
 
-        docs = Array.isArray(docs) ? docs : [docs];
+        docs = isArray ? docs : [docs];
         spec = spec.split(':');
         localPath = spec[0];
         relatedPath = spec[1];
@@ -58,8 +59,6 @@ function sync(model, spec, fields, config) {
             })
         };
 
-        console.log('qery ', query);
-
         p = model.find(query, fields);
         if (config.lean) p = p.lean();
         return p.exec().then(function (related) {
@@ -72,7 +71,7 @@ function sync(model, spec, fields, config) {
                 atlas[_propertySeek2['default'].get(rel, relatedPath)] = rel;
             });
 
-            return docs.map(function (doc) {
+            var ret = docs.map(function (doc) {
 
                 if (Array.isArray(doc[localPath])) {
 
@@ -86,6 +85,8 @@ function sync(model, spec, fields, config) {
 
                 return doc;
             });
+
+            return isArray ? ret : ret[0];
         });
     };
 }

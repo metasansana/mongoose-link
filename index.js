@@ -26,12 +26,13 @@ export function sync(model, spec, fields, config) {
         var link;
         var query = {};
         var atlas = {};
+        var isArray = Array.isArray(docs);
         var p;
 
         config = config || DEFAULT_CONFIG;
         if (!docs) return docs;
 
-        docs = (Array.isArray(docs)) ? docs : [docs];
+        docs = (isArray) ? docs : [docs];
         spec = spec.split(':');
         localPath = spec[0];
         relatedPath = spec[1];
@@ -59,7 +60,7 @@ export function sync(model, spec, fields, config) {
                 atlas[property.get(rel, relatedPath)] = rel;
             });
 
-            return docs.map(doc => {
+            var ret =  docs.map(doc => {
 
                 if (Array.isArray(doc[localPath])) {
 
@@ -78,6 +79,8 @@ export function sync(model, spec, fields, config) {
                 return doc;
 
             });
+
+            return (isArray)? ret : ret[0];
         });
     }
 }
